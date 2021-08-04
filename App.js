@@ -1,21 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { Component } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Expo from "expo";
+import * as THREE from "three";
+import ExpoTHREE from "expo-three";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <Expo.GLView
+        style={{ flex: 1 }}
+        onContextCreate={this._onGLContextCreate}
+      />
+    );
+  }
+
+  _onGLContextCreate = async (gl) => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      gl.drawingBufferWidth / gl.drawingBufferHeight,
+      0.1,
+      1000
+    );
+    const renderer = ExpoTHREE.createRenderer({ gl });
+    renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+    const geometry = new THREE.SphereBufferGeometry(1, 36, 36);
+    const material = new THREE.MeshBasicMaterial({
+      map: await ExpoTHREE.createTextureAsync({
+        asset: Expo.Asset.fromModule(require("./img/panorama.png")),
+      }),
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+    camera.position.z = 2;
+    const render = () => {
+      requestAnimationFrame(render);
+      sphere.rotation.x += 0.01;
+      sphere.rotation.y += 0.01;
+      renderer.render(scene, camera);
+      gl.endFrameEXP();
+    };
+    render();
+  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
