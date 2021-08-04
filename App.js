@@ -6,15 +6,6 @@ import * as THREE from "three";
 import ExpoTHREE from "expo-three";
 
 export default class App extends Component {
-  render() {
-    return (
-      <Expo.GLView
-        style={{ flex: 1 }}
-        onContextCreate={this._onGLContextCreate}
-      />
-    );
-  }
-
   _onGLContextCreate = async (gl) => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -44,6 +35,15 @@ export default class App extends Component {
     };
     render();
   };
+
+  render() {
+    return (
+      <Expo.GLView
+        style={{ flex: 1 }}
+        onContextCreate={this._onGLContextCreate}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
