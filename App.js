@@ -1,47 +1,35 @@
 import { StatusBar } from "expo-status-bar";
-import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Expo from "expo";
-import * as THREE from "three";
-import ExpoTHREE from "expo-three";
+import * as React from "react";
+import { View, TouchableWithoutFeedback, Text } from "react-native";
+import { GLView } from "expo-gl";
+import { Renderer } from "expo-three";
+
+import {
+  AmbientLight,
+  SphereGeometry,
+  Fog,
+  GridHelper,
+  Mesh,
+  MeshStandardMaterial,
+  PerspectiveCamera,
+  PointLight,
+  Scene,
+  SpotLight,
+} from "three";
 
 export default class App extends Component {
-  _onGLContextCreate = async (gl) => {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      gl.drawingBufferWidth / gl.drawingBufferHeight,
-      0.1,
-      1000
-    );
-    const renderer = ExpoTHREE.createRenderer({ gl });
-    renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-
-    const geometry = new THREE.SphereBufferGeometry(1, 36, 36);
-    const material = new THREE.MeshBasicMaterial({
-      map: await ExpoTHREE.createTextureAsync({
-        asset: Expo.Asset.fromModule(require("./img/panorama.png")),
-      }),
-    });
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-    camera.position.z = 2;
-    const render = () => {
-      requestAnimationFrame(render);
-      sphere.rotation.x += 0.01;
-      sphere.rotation.y += 0.01;
-      renderer.render(scene, camera);
-      gl.endFrameEXP();
-    };
-    render();
-  };
-
   render() {
-    return (
-      <Expo.GLView
-        style={{ flex: 1 }}
-        onContextCreate={this._onGLContextCreate}
-      />
+    return <GLView style={{ flex: 1 }} onContextCreate={async (gl) => {}} />;
+  }
+}
+
+class SphereMesh extends Mesh {
+  constructor() {
+    super(
+      new SphereGeometry(0, 50, 20, 0, Math.PI * 2, 0, Math.PI * 2),
+      new MeshStandardMaterial({
+        color: 0xff0000,
+      })
     );
   }
 }
