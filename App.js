@@ -1,9 +1,7 @@
-import * as React from "react";
-import { View, TouchableWithoutFeedback, Text } from "react-native";
-
-import { GLView } from "expo-gl";
-import { Renderer } from "expo-three";
-import { TweenMax } from "gsap";
+import Expo from "expo";
+import React, { Component } from "react";
+import * as THREE from "three";
+import ExpoTHREE from "expo-three";
 
 import {
   AmbientLight,
@@ -18,96 +16,41 @@ import {
   SpotLight,
 } from "three";
 
-export default function App() {
-  const sphere = new SphereMesh();
-  const camera = new PerspectiveCamera(100, 0.4, 0.01, 1000);
-
-  let cameraInitialPositionX = 0;
-  let cameraInitialPositionY = 2;
-  let cameraInitialPositionZ = 5;
-
-  function move(distance) {
-    TweenMax.to(sphere.position, 0.2, {
-      z: sphere.position.z + distance,
-    });
-
-    TweenMax.to(camera.position, 0.2, {
-      z: camera.position.z + distance,
-    });
-  }
-
-  return (
-    <View style={{ flex: 1 }}>
-      <GLView
+export default class App extends Component {
+  render() {
+    return (
+      <Expo.GLView
         style={{ flex: 1 }}
-        onContextCreate={async (gl) => {
-          // GL Parameter disruption
-          const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-
-          // Renderer declaration and set properties
-          const renderer = new Renderer({ gl });
-          renderer.setSize(width, height);
-          renderer.setClearColor("#fff");
-
-          // Scene declaration, add a fog, and a grid helper to see axes dimensions
-          const scene = new Scene();
-          scene.fog = new Fog("#3A96C4", 1, 10000);
-          scene.add(new GridHelper(10, 10));
-
-          // Add all necessary lights
-          const ambientLight = new AmbientLight(0x101010);
-          scene.add(ambientLight);
-
-          // Add sphere object instance to our scene
-          scene.add(sphere);
-
-          // Set camera position and look to sphere
-          camera.position.set(
-            cameraInitialPositionX,
-            cameraInitialPositionY,
-            cameraInitialPositionZ
-          );
-
-          camera.lookAt(sphere.position);
-
-          // Render function
-          const render = () => {
-            requestAnimationFrame(render);
-            renderer.render(scene, camera);
-            gl.endFrameEXP();
-          };
-          render();
-        }}
-      >
-        <View>
-          <TouchableWithoutFeedback onPressIn={() => move(-0.2)}>
-            <Text
-              style={{
-                fontSize: 36,
-                MozUserSelect: "none",
-                WebkitUserSelect: "none",
-                msUserSelect: "none",
-              }}
-            >
-              UP
-            </Text>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPressIn={() => move(0.2)}>
-            <Text
-              style={{
-                fontSize: 36,
-                MozUserSelect: "none",
-                WebkitUserSelect: "none",
-                msUserSelect: "none",
-              }}
-            >
-              DOWN
-            </Text>
-          </TouchableWithoutFeedback>
-        </View>
-      </GLView>
-    </View>
-  );
+        onContextCreate={this._onGLContextCreate}
+      />
+    );
+  }
+  _onGLContextCreate = async (gl) => {
+    // Here is where we will define our scene, camera and renderer
+    // 1. Scene
+    var scene = new THREE.Scene();
+    // 2. Camera
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      gl.drawingBufferWidth / gl.drawingBufferHeight,
+      0.1,
+      1000
+    );
+    // 3. Renderer
+    const renderer = ExpoTHREE.createRenderer({ gl });
+    renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
+    // Define our shape (Below is a tetrahedron, but can be whatever)
+    const geometry = new THREE.TetrahedronBufferGeometry(0.1, 0);
+    // Define the material, Below is material with hex color #00ff00
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    or;
+    // For custom material of any image, simply download any image into your project and use:
+    // Define the full 3-D object
+    const objectToRender = new THREE.Mesh(geometry, material);
+    // Specifying the cameras Z position will allow the object to appear in front of the camera rather that in line (which the camera which is the default)
+    camera.position.z = 2;
+    scene.add(objectToRender);
+  };
 }
 
 class SphereMesh extends Mesh {
