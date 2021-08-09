@@ -1,7 +1,9 @@
 import * as React from "react";
 import { View, TouchableWithoutFeedback, Text } from "react-native";
+
 import { GLView } from "expo-gl";
 import { Renderer } from "expo-three";
+import { TweenMax } from "gsap";
 
 import {
   AmbientLight,
@@ -16,9 +18,26 @@ import {
   SpotLight,
 } from "three";
 
-export default class App extends Component {
-  render() {
-    return (
+export default function App() {
+  const sphere = new SphereMesh();
+  const camera = new PerspectiveCamera(100, 0.4, 0.01, 1000);
+
+  let cameraInitialPositionX = 0;
+  let cameraInitialPositionY = 2;
+  let cameraInitialPositionZ = 5;
+
+  function move(distance) {
+    TweenMax.to(sphere.position, 0.2, {
+      z: sphere.position.z + distance,
+    });
+
+    TweenMax.to(camera.position, 0.2, {
+      z: camera.position.z + distance,
+    });
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
       <GLView
         style={{ flex: 1 }}
         onContextCreate={async (gl) => {
@@ -38,15 +57,6 @@ export default class App extends Component {
           // Add all necessary lights
           const ambientLight = new AmbientLight(0x101010);
           scene.add(ambientLight);
-
-          const pointLight = new PointLight(0xffffff, 2, 1000, 1);
-          pointLight.position.set(0, 200, 200);
-          scene.add(pointLight);
-
-          const spotLight = new SpotLight(0xffffff, 0.5);
-          spotLight.position.set(0, 500, 100);
-          spotLight.lookAt(scene.position);
-          scene.add(spotLight);
 
           // Add sphere object instance to our scene
           scene.add(sphere);
@@ -68,17 +78,36 @@ export default class App extends Component {
           };
           render();
         }}
-      />
-    );
-  }
-  _onGLContextCreate = async (gl) => {
-    const sphere = new SphereMesh();
-    const camera = new PerspectiveCamera(100, 0.4, 0.01, 1000);
-
-    let cameraInitialPositionX = 0;
-    let cameraInitialPositionY = 2;
-    let cameraInitialPositionZ = 5;
-  };
+      >
+        <View>
+          <TouchableWithoutFeedback onPressIn={() => move(-0.2)}>
+            <Text
+              style={{
+                fontSize: 36,
+                MozUserSelect: "none",
+                WebkitUserSelect: "none",
+                msUserSelect: "none",
+              }}
+            >
+              UP
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPressIn={() => move(0.2)}>
+            <Text
+              style={{
+                fontSize: 36,
+                MozUserSelect: "none",
+                WebkitUserSelect: "none",
+                msUserSelect: "none",
+              }}
+            >
+              DOWN
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
+      </GLView>
+    </View>
+  );
 }
 
 class SphereMesh extends Mesh {
