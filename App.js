@@ -1,7 +1,7 @@
-import Expo from "expo";
-import React, { Component } from "react";
-import * as THREE from "three";
-import ExpoTHREE from "expo-three";
+import * as React from "react";
+import { View, TouchableWithoutFeedback, Text } from "react-native";
+import { GLView } from "expo-gl";
+import { Renderer } from "expo-three";
 
 import {
   AmbientLight,
@@ -18,12 +18,7 @@ import {
 
 export default class App extends Component {
   render() {
-    return (
-      <Expo.GLView
-        style={{ flex: 1 }}
-        onContextCreate={this._onGLContextCreate}
-      />
-    );
+    return <GLView style={{ flex: 1 }} onContextCreate={async (gl) => {}} />;
   }
   _onGLContextCreate = async (gl) => {
     // Here is where we will define our scene, camera and renderer
