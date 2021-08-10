@@ -1,7 +1,7 @@
 import { View as GraphicsView } from "expo-graphics";
 import ExpoTHREE, { THREE } from "expo-three";
 import React from "react";
-import { OBJLoader } from "./jsm/loaders/OBJLoader.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 
 export default class App extends React.Component {
   componentDidMount() {
