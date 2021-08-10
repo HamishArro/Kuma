@@ -47,10 +47,19 @@ export default class App extends React.Component {
     light.position.set(3, 3, 3);
     this.scene.add(light);
 
-    const objLoader = new OBJLoader();
-    objLoader.load("resources/models/PolarBear.obj", (root) => {
-      this.scene.add(root);
-    });
+    const loader = new OBJLoader();
+    loader.load(
+      "resources/models/eyeball/eyeball.obj",
+      function (object) {
+        this.scene.add(object);
+      },
+      function (xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      function (error) {
+        console.log("An error happened");
+      }
+    );
   };
 
   onRender = (delta) => {
