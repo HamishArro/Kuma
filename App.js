@@ -46,6 +46,10 @@ export default class App extends React.Component {
     const light = new THREE.DirectionalLight(0xffffff, 0.5);
     light.position.set(3, 3, 3);
     this.scene.add(light);
+    const objLoader = new OBJLoader();
+    objLoader.load("resources/models/windmill/windmill.obj", (root) => {
+      scene.add(root);
+    });
   };
 
   onRender = (delta) => {
