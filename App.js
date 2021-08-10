@@ -1,7 +1,7 @@
 import { View as GraphicsView } from "expo-graphics";
 import ExpoTHREE, { THREE } from "expo-three";
 import React from "react";
-import { OBJLoader } from "./resources/threejs/r127/examples/jsm/loaders/OBJLoader.js";
+import { OBJLoader } from "./jsm/loaders/OBJLoader.js";
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -46,9 +46,10 @@ export default class App extends React.Component {
     const light = new THREE.DirectionalLight(0xffffff, 0.5);
     light.position.set(3, 3, 3);
     this.scene.add(light);
+
     const objLoader = new OBJLoader();
     objLoader.load("resources/models/PolarBear.obj", (root) => {
-      scene.add(root);
+      this.scene.add(root);
     });
   };
 
