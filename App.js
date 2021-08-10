@@ -1,122 +1,55 @@
-import * as React from "react";
-import { View, TouchableWithoutFeedback, Text } from "react-native";
+import { View as GraphicsView } from "expo-graphics";
+import ExpoTHREE, { THREE } from "expo-three";
+import React from "react";
 
-import { GLView } from "expo-gl";
-import { Renderer } from "expo-three";
-import { TweenMax } from "gsap";
-
-import {
-  AmbientLight,
-  SphereGeometry,
-  Fog,
-  GridHelper,
-  Mesh,
-  MeshStandardMaterial,
-  PerspectiveCamera,
-  PointLight,
-  Scene,
-  SpotLight,
-} from "three";
-
-export default function App() {
-  const sphere = new SphereMesh();
-  const camera = new PerspectiveCamera(100, 0.4, 0.01, 1000);
-
-  let cameraInitialPositionX = 0;
-  let cameraInitialPositionY = 2;
-  let cameraInitialPositionZ = 5;
-
-  function move(distance) {
-    TweenMax.to(sphere.position, 0.2, {
-      z: sphere.position.z + distance,
-    });
-
-    TweenMax.to(camera.position, 0.2, {
-      z: camera.position.z + distance,
-    });
+export default class App extends React.Component {
+  componentDidMount() {
+    THREE.suppressExpoWarnings();
   }
 
-  return (
-    <View style={{ flex: 1 }}>
-      <GLView
-        style={{ flex: 1 }}
-        onContextCreate={async (gl) => {
-          // GL Parameter disruption
-          const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-
-          // Renderer declaration and set properties
-          const renderer = new Renderer({ gl });
-          renderer.setSize(width, height);
-          renderer.setClearColor("#fff");
-
-          // Scene declaration, add a fog, and a grid helper to see axes dimensions
-          const scene = new Scene();
-          scene.fog = new Fog("#3A96C4", 1, 10000);
-          scene.add(new GridHelper(10, 10));
-
-          // Add all necessary lights
-          const ambientLight = new AmbientLight(0x101010);
-          scene.add(ambientLight);
-
-          // Add sphere object instance to our scene
-          scene.add(sphere);
-
-          // Set camera position and look to sphere
-          camera.position.set(
-            cameraInitialPositionX,
-            cameraInitialPositionY,
-            cameraInitialPositionZ
-          );
-
-          camera.lookAt(sphere.position);
-
-          // Render function
-          const render = () => {
-            requestAnimationFrame(render);
-            renderer.render(scene, camera);
-            gl.endFrameEXP();
-          };
-          render();
-        }}
-      >
-        <View>
-          <TouchableWithoutFeedback onPressIn={() => move(-0.2)}>
-            <Text
-              style={{
-                fontSize: 36,
-                MozUserSelect: "none",
-                WebkitUserSelect: "none",
-                msUserSelect: "none",
-              }}
-            >
-              UP
-            </Text>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPressIn={() => move(0.2)}>
-            <Text
-              style={{
-                fontSize: 36,
-                MozUserSelect: "none",
-                WebkitUserSelect: "none",
-                msUserSelect: "none",
-              }}
-            >
-              DOWN
-            </Text>
-          </TouchableWithoutFeedback>
-        </View>
-      </GLView>
-    </View>
-  );
-}
-
-class SphereMesh extends Mesh {
-  constructor() {
-    super(
-      new SphereGeometry(0, 50, 20, 0, Math.PI * 2, 0, Math.PI * 2),
-      new MeshStandardMaterial({
-        color: 0xff0000,
-      })
+  render() {
+    // Create an `ExpoGraphics.View` covering the whole screen, tell it to call our
+    // `onContextCreate` function once it's initialized.
+    return (
+      <GraphicsView
+        onContextCreate={this.onContextCreate}
+        onRender={this.onRender}
+      />
     );
   }
+
+  // This is called by the `ExpoGraphics.View` once it's initialized
+  onContextCreate = async ({
+    gl,
+    canvas,
+    width,
+    height,
+    scale: pixelRatio,
+  }) => {
+    this.renderer = new ExpoTHREE.Renderer({ gl, pixelRatio, width, height });
+    this.renderer.setClearColor(0xffffff);
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.camera.position.z = 5;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xff0000,
+    });
+
+    this.cube = new THREE.Mesh(geometry, material);
+    this.scene.add(this.cube);
+
+    this.scene.add(new THREE.AmbientLight(0x404040));
+
+    const light = new THREE.DirectionalLight(0xffffff, 0.5);
+    light.position.set(3, 3, 3);
+    this.scene.add(light);
+  };
+
+  onRender = (delta) => {
+    this.cube.rotation.x += 2 * delta;
+    this.cube.rotation.y += 2 * delta;
+    this.renderer.render(this.scene, this.camera);
+  };
 }

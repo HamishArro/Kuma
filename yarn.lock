@@ -2763,6 +2763,11 @@ expo-gl@^10.4.2:
     expo-modules-core "~0.2.0"
     invariant "^2.2.4"
 
+expo-graphics@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/expo-graphics/-/expo-graphics-2.0.0.tgz#3ae1843d2a5c9439269caa04eb7c861b030ae278"
+  integrity sha512-/FmMmVuN0TwUGT2VsS+gndu6FP+bzdtoeoullRJfTq+4pGLnX9UqFOGNLRjAa+WzCv/MN+DETNovG9QgKqNUFw==
+
 expo-keep-awake@~9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-9.2.0.tgz#9cbdcc8264c943ef29a58326236cd34267e98f43"
