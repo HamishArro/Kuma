@@ -47,7 +47,7 @@ export default class App extends React.Component {
     light.position.set(3, 3, 3);
     this.scene.add(light);
     const objLoader = new OBJLoader();
-    objLoader.load("resources/models/windmill/windmill.obj", (root) => {
+    objLoader.load("resources/models/PolarBear.obj", (root) => {
       scene.add(root);
     });
   };
