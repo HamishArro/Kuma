@@ -1,8 +1,8 @@
 import { View as GraphicsView } from "expo-graphics";
 import ExpoTHREE, { THREE } from "expo-three";
 import React from "react";
-// import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-// import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -76,13 +76,13 @@ function addMesh(mesh) {
 }
 
 function loadMesh(name, callback) {
-  var mtlLoader = new THREE.MTLLoader();
+  var mtlLoader = new MTLLoader();
   mtlLoader.setPath("models/eyeball/");
   mtlLoader.load(
     "eyeball.mtl",
     function (materials) {
       materials.preload();
-      const objLoader = new THREE.OBJLoader();
+      const objLoader = new OBJLoader();
       objLoader.setMaterials(materials);
       objLoader.setPath("models/eyeball/");
       objLoader.load(
