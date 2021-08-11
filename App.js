@@ -48,36 +48,19 @@ export default class App extends React.Component {
     light.position.set(3, 3, 3);
     this.scene.add(light);
 
-    const objLoader = new OBJLoader();
-    const matLoader = new MTLLoader();
+    const name = "eyeball";
 
-    // matLoader.setTexturePath("models/eyeball/");
-
-    matLoader.load(
-      "models/eyeball/eyeball.mtl",
-      function (materials) {
-        materials.preload();
-        objLoader.setMaterials(materials);
-        objLoader.load(
-          "models/eyeball/eyeball.obj",
-          function (object) {
-            this.scene.add(object);
-          },
-          function (xhr) {
-            console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-          },
-          function (error) {
-            console.log("An error happened");
-          }
-        );
-      },
-      function (xhr) {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-      },
-      function (error) {
-        console.log("An error happened");
-      }
-    );
+    loadMesh("eyeball", function (obj) {
+      obj.position.x = 0;
+      obj.position.y = 0;
+      obj.position.z = 450;
+      obj.rotation.x += 1;
+      //obj.rotation.y -= 1;
+      obj.scale.x = 0.1;
+      obj.scale.y = 0.1;
+      obj.scale.z = 0.1;
+      addMesh(obj);
+    });
   };
 
   onRender = (delta) => {
@@ -85,4 +68,40 @@ export default class App extends React.Component {
     this.cube.rotation.y += 2 * delta;
     this.renderer.render(this.scene, this.camera);
   };
+}
+
+function addMesh(mesh) {
+  scene.add(mesh);
+  console.log(mesh.getWorldPosition());
+}
+
+function loadMesh(name, callback) {
+  const objLoader = new OBJLoader();
+  const matLoader = new MTLLoader();
+  // matLoader.setTexturePath("models/eyeball/");
+  matLoader.load(
+    "models/eyeball/eyeball.mtl",
+    function (materials) {
+      materials.preload();
+      objLoader.setMaterials(materials);
+      objLoader.load(
+        "models/eyeball/eyeball.obj",
+        function (object) {
+          this.scene.add(object);
+        },
+        function (xhr) {
+          console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+        },
+        function (error) {
+          console.log("An error happened - objLoader");
+        }
+      );
+    },
+    function (xhr) {
+      console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    },
+    function (error) {
+      console.log("An error happened - matLoader");
+    }
+  );
 }
