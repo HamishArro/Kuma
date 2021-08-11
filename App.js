@@ -2,6 +2,7 @@ import { View as GraphicsView } from "expo-graphics";
 import ExpoTHREE, { THREE } from "expo-three";
 import React from "react";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -47,7 +48,8 @@ export default class App extends React.Component {
     light.position.set(3, 3, 3);
     this.scene.add(light);
 
-    const loader = new OBJLoader();
+    const objLoader = new OBJLoader();
+    const matLoader = new MTLLoader();
     loader.load(
       "resources/models/eyeball/eyeball.obj",
       function (object) {
