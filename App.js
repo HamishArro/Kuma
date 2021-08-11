@@ -51,24 +51,33 @@ export default class App extends React.Component {
     const objLoader = new OBJLoader();
     const matLoader = new MTLLoader();
 
-    matLoader.setTexturePath("models/eyeball/");
+    // matLoader.setTexturePath("models/eyeball/");
 
-    matLoader.load("models/eyeball/eyeball.mtl", function (materials) {
-      materials.preload();
-      objLoader.setMaterials(materials);
-      objLoader.load(
-        "models/eyeball/eyeball.obj",
-        function (object) {
-          this.scene.add(object);
-        },
-        function (xhr) {
-          console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-        },
-        function (error) {
-          console.log("An error happened");
-        }
-      );
-    });
+    matLoader.load(
+      "models/eyeball/eyeball.mtl",
+      function (materials) {
+        materials.preload();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          "models/eyeball/eyeball.obj",
+          function (object) {
+            this.scene.add(object);
+          },
+          function (xhr) {
+            console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+          },
+          function (error) {
+            console.log("An error happened");
+          }
+        );
+      },
+      function (xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      function (error) {
+        console.log("An error happened");
+      }
+    );
   };
 
   onRender = (delta) => {
