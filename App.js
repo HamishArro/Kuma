@@ -40,7 +40,7 @@ export default class App extends React.Component {
     });
 
     this.cube = new THREE.Mesh(geometry, material);
-    this.scene.add(this.cube);
+    // this.scene.add(this.cube);
 
     this.scene.add(new THREE.AmbientLight(0x404040));
 
@@ -77,14 +77,14 @@ function addMesh(mesh) {
 
 function loadMesh(name, callback) {
   var mtlLoader = new MTLLoader();
-  mtlLoader.setPath("models/eyeball/");
+  mtlLoader.setPath("./models/eyeball/");
   mtlLoader.load(
     "eyeball.mtl",
     function (materials) {
       materials.preload();
       const objLoader = new OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.setPath("models/eyeball/");
+      objLoader.setPath("./models/eyeball/");
       objLoader.load(
         "eyeball.obj",
         function (object) {
