@@ -59,6 +59,7 @@ export default class App extends React.Component {
       obj.scale.x = 0.1;
       obj.scale.y = 0.1;
       obj.scale.z = 0.1;
+      this.scene.add(mesh);
       addMesh(obj);
     });
   };
@@ -71,7 +72,6 @@ export default class App extends React.Component {
 }
 
 function addMesh(mesh) {
-  scene.add(mesh);
   console.log(mesh.getWorldPosition());
 }
 
